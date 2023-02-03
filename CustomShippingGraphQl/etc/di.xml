@@ -3,4 +3,7 @@
 
     <preference for="Magento\QuoteGraphQl\Model\Resolver\SetShippingMethodsOnCart"
                 type="Task\CustomShippingGraphQl\Model\Resolver\SetShippingMethodsOnCart"/>
+
+    <preference for="Magento\QuoteGraphQl\Model\Resolver\SetPaymentMethodsOnCart"
+                type="Task\CustomShippingGraphQl\Model\Resolver\SetPaymentMethodsOnCart"/>
 </config>

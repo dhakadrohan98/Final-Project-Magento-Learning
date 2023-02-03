@@ -7,18 +7,18 @@ declare(strict_types=1);
 
 namespace Task\CustomShippingGraphQl\Model\Resolver;
 
+use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
-use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\QuoteGraphQl\Model\Cart\GetCartForUser;
-use Magento\QuoteGraphQl\Model\Cart\SetShippingMethodsOnCartInterface;
 use Magento\QuoteGraphQl\Model\Cart\CheckCartCheckoutAllowance;
+use Magento\QuoteGraphQl\Model\Cart\GetCartForUser;
+use Magento\QuoteGraphQl\Model\Cart\SetPaymentMethodOnCart as SetPaymentMethodOnCartModel;
 
 /**
- * Mutation resolver for setting shipping methods for shopping cart
+ * Mutation resolver for setting payment method for shopping cart
  */
-class SetShippingMethodsOnCart implements ResolverInterface
+class SetPaymentMethodOnCart implements ResolverInterface
 {
     /**
      * @var GetCartForUser
@@ -26,9 +26,9 @@ class SetShippingMethodsOnCart implements ResolverInterface
     private $getCartForUser;
 
     /**
-     * @var SetShippingMethodsOnCartInterface
+     * @var SetPaymentMethodOnCartModel
      */
-    private $setShippingMethodsOnCart;
+    private $setPaymentMethodOnCart;
 
     /**
      * @var CheckCartCheckoutAllowance
@@ -37,16 +37,16 @@ class SetShippingMethodsOnCart implements ResolverInterface
 
     /**
      * @param GetCartForUser $getCartForUser
-     * @param SetShippingMethodsOnCartInterface $setShippingMethodsOnCart
+     * @param SetPaymentMethodOnCartModel $setPaymentMethodOnCart
      * @param CheckCartCheckoutAllowance $checkCartCheckoutAllowance
      */
     public function __construct(
         GetCartForUser $getCartForUser,
-        SetShippingMethodsOnCartInterface $setShippingMethodsOnCart,
+        SetPaymentMethodOnCartModel $setPaymentMethodOnCart,
         CheckCartCheckoutAllowance $checkCartCheckoutAllowance
     ) {
         $this->getCartForUser = $getCartForUser;
-        $this->setShippingMethodsOnCart = $setShippingMethodsOnCart;
+        $this->setPaymentMethodOnCart = $setPaymentMethodOnCart;
         $this->checkCartCheckoutAllowance = $checkCartCheckoutAllowance;
     }
 
@@ -55,24 +55,24 @@ class SetShippingMethodsOnCart implements ResolverInterface
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/shipping.log');
+        $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/payment.log');
         $logger = new \Zend_Log();
         $logger->addWriter($writer);
         if (empty($args['input']['cart_id'])) {
-            throw new GraphQlInputException(__('Required parameter "cart_id" is missing'));
+            throw new GraphQlInputException(__('Required parameter "cart_id" is missing.'));
         }
         $maskedCartId = $args['input']['cart_id'];
 
-        if (empty($args['input']['shipping_methods'])) {
-            throw new GraphQlInputException(__('Required parameter "shipping_methods" is missing'));
+        if (empty($args['input']['payment_method']['code'])) {
+            throw new GraphQlInputException(__('Required parameter "code" for "payment_method" is missing.'));
         }
-        $shippingMethods = $args['input']['shipping_methods'];
-//        $logger->info(var_dump($shippingMethods));
+        $paymentData = $args['input']['payment_method'];
+//        $logger->info(var_dump($paymentData));
 
         $storeId = (int)$context->getExtensionAttributes()->getStore()->getId();
         $cart = $this->getCartForUser->execute($maskedCartId, $context->getUserId(), $storeId);
         $this->checkCartCheckoutAllowance->execute($cart);
-        $this->setShippingMethodsOnCart->execute($context, $cart, $shippingMethods);
+        $this->setPaymentMethodOnCart->execute($cart, $paymentData);
         $cart = $this->getCartForUser->execute($maskedCartId, $context->getUserId(), $storeId);
 
         return [
