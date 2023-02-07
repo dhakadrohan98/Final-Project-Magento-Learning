@@ -5,6 +5,12 @@ type Mutation {
     ): CustomerOutput
     @resolver(class:"\\Task\\CreateCustomerAccountGraphQl\\Model\\Resolver\\CreateCustomer")
     @doc(description:"Create customer account")
+
+    updateCustomerV2 (
+    customer_company_name: String! @doc(description: "The customer's company name input")
+    ): CustomerOutput
+    @resolver(class:"\\Task\\CreateCustomerAccountGraphQl\\Model\\Resolver\\UpdateCustomer")
+    @doc(description:"Update the customer's personal information")
 }
 
 type CustomerOutput {

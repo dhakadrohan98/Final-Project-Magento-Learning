@@ -9,6 +9,7 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\Validator\EmailAddress as EmailValidator;
 use MageDigest\DemoGraphQl\Model\Customer\Order as CustomerOrder;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\GraphQl\Model\Query\ContextInterface;
 
 class UpdateCompany implements ResolverInterface
 {
@@ -39,6 +40,11 @@ class UpdateCompany implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
+        /** @var ContextInterface $context */
+        if (false === $context->getExtensionAttributes()->getIsCustomer()) {
+            throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
+        }
+
         $customerId = $args['id'];
         $customerCompany['company_name'] = $args['company_name'];
         $customer = $this->_customerFactory->create()->load($customerId)->getDataModel();

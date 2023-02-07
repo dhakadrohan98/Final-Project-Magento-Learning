@@ -3,4 +3,14 @@
 
     <preference for="Magento\CustomerGraphQl\Model\Resolver\CreateCustomer"
                 type="Task\CreateCustomerAccountGraphQl\Model\Resolver\CreateCustomer"/>
+
+    <preference for="Magento\CustomerGraphQl\Model\Resolver\UpdateCustomer"
+                type="Task\CreateCustomerAccountGraphQl\Model\Resolver\UpdateCustomer"/>
+
+    <!--<preference for="Magento\CustomerGraphQl\Model\Resolver\Customer"-->
+                <!--type="Task\CreateCustomerAccountGraphQl\Model\Resolver\Customer"/>-->
+
+    <!--<preference for="Magento\CustomerGraphQl\Model\Customer\ExtractCustomerData"-->
+                <!--type="Task\CreateCustomerAccountGraphQl\Model\Customer\ExtractCustomerData"/>-->
+
 </config>

@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Task\CreateCustomerAccountGraphQl\Model\Resolver;
 
 use Magento\CustomerGraphQl\Model\Customer\CreateCustomerAccount;
-use Magento\CustomerGraphQl\Model\Customer\ExtractCustomerData;
+use Task\CreateCustomerAccountGraphQl\Model\Customer\ExtractCustomerData;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
