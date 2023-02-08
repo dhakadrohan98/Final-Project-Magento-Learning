@@ -20,13 +20,13 @@
                     <validate>validate-number validate-zero-or-greater</validate>
                 </field>
                 <field id="sallowspecific" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" canRestore="1">
-                    <label>Ship to Applicable Countries</label>
+                    <label>Ship to Applicable Cities</label>
                     <frontend_class>shipping-applicable-country</frontend_class>
                     <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
                 </field>
-                <field id="specificcountry" translate="label" type="multiselect" sortOrder="91" showInDefault="1" showInWebsite="1">
-                    <label>Ship to Specific Countries</label>
-                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                <field id="specificcities" translate="label" type="select" sortOrder="91" showInDefault="1" showInWebsite="1">
+                    <label>Ship to Specific Cities</label>
+                    <source_model>Task\CustomShipping\Model\Config\Source\CityOptions</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
                 <field id="showmethod" translate="label" type="select" sortOrder="92" showInDefault="1" showInWebsite="1">

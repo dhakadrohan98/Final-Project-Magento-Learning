@@ -70,7 +70,9 @@ class CustomShipping extends AbstractCarrier implements CarrierInterface
         if (!$this->getConfigFlag('active')) {
             return false;
         }
-
+        $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/customship.log');
+        $logger = new \Zend_Log();
+        $logger->addWriter($writer);
         /** @var \Magento\Shipping\Model\Rate\Result $result */
         $result = $this->rateResultFactory->create();
 
@@ -86,8 +88,20 @@ class CustomShipping extends AbstractCarrier implements CarrierInterface
 
         $method->setPrice($shippingCost); //Amount payable by the customer
         $method->setCost($shippingCost); //Amount payable by the merchant
-        $result->append($method);
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $scopeConfig=$objectManager->create('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $restrictedcity=$scopeConfig->getValue('carriers/myshippingmethod/specificcities', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        // $logger->info(var_dump($restrictedcity));
+
+        if ($method->getMethod() == 'myshippingmethod') {
+            if ($request->getDestCity() == $restrictedcity) {
+                $result->append($method);
+            }
+        } else {
+            $result->append($method);
+        }
+//
         return $result;
     }
     

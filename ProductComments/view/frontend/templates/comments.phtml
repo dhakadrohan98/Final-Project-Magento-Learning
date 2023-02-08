@@ -3,13 +3,24 @@ $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 $customerSession = $objectManager->create('Magento\Customer\Model\Session');
 $quote = $objectManager->create('Magento\Checkout\Model\Cart')->getQuote();
 $itemsCount = $quote->getItemsCount();
+
+$items = $quote->getItems();
+$k = 1;
+$producItem = array();
+
+foreach ($items as $item) {
+    $producItem[$k] = $item->getName();
+    $k++;
+}
+
+
 ?>
-<h1>Write Your Product comment here...</h1>
-<form id="save" action="/comment/index/save" method="POST">
+<form id="save" action="/comment/index/save" method="POST" style="margin-top: -20px;">
+    <h3 id="comment">Write Your Product comment here...</h3>
     <?php for ($i = 1; $i <= $itemsCount; $i++) : ?>
-        <span>order comment for item <?php echo $i ?></span>
+        <span style="color: red">order comment for <?php echo $producItem[$i]; ?></span>
         <br>
-        <input type="text" name="<?php echo "comment" . $i ?>" id="<?php echo "comment" . $i ?>" placeholder="order comment for item <?php echo $i ?> ...." style="width: 631px;height: 50px;">
+        <input style="margin-top: 0px; width: 500px;height: 50px;" type="text" name="<?php echo "comment" . $i ?>" id="<?php echo "comment" . $i ?>" placeholder="order comment for item <?php echo $i ?> ....">
         <br>
         <br>
     <?php endfor; ?>
@@ -21,5 +32,16 @@ $itemsCount = $quote->getItemsCount();
         $(document).on('click', '.primary', function() {
             $('#save').submit();
         })
+
+            setTimeout(function(){
+                var link=window.location.href;
+                hashlink = link.split('#');
+                if(hashlink[hashlink.length-1]==='shipping'){
+                    var element = document.getElementById("save");
+                    var element1 = document.getElementById("comment");
+                    element.style.display='none';
+                    element1.style.display='none';
+                }
+            },1000);
     });
 </script>
